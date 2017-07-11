@@ -18,6 +18,8 @@
     Game.preloadItems.push({ type: "image", name: "layer2", path: "assets/images/landscape/layer2.png" });
     Game.preloadItems.push({ type: "image", name: "layer3", path: "assets/images/landscape/layer3.png" });
 
+    Game.preloadItems.push({ type: "json", name: "levelData", path: "assets/data/levels/level01.json" });
+
     Game.State.Play = function(game) {
 
         /**
@@ -489,8 +491,13 @@
      */
 
     Game.State.Play.prototype.setLevelParams = function() {
+
+        var thisLevelData = this.game.cache.getJSON('levelData');
+
+        console.log("powerBlastChargedAt: " + thisLevelData);
+
         //sets the size of the level
-        this.levelLength = 1;
+        this.levelLength = Number(thisLevelData.levelLength);
 
         //Total number of enemies
         this.numOfEnemies = 7;
