@@ -65,11 +65,14 @@
 	
 	Game.State.Play.prototype.createMultiEnemies = function(numOfEnemies, enemyToCreate)
 	{
-		
-		for(count = 0; count<numOfEnemies;count++)
+
+		for(var count = 0; count<numOfEnemies;count++)
 		{
+
 			this.createEnemy(enemyToCreate);
+
 		}
+
 	};
 	
 	/**

@@ -376,6 +376,7 @@
      */
 
     Game.State.Play.prototype.create = function() {
+
         //Allow the calculation of FPSs
         this.game.time.advancedTiming = true;
 
@@ -494,13 +495,11 @@
 
         var thisLevelData = this.game.cache.getJSON('levelData');
 
-        console.log("powerBlastChargedAt: " + thisLevelData.levelLength);
-
         //sets the size of the level
         this.levelLength = parseFloat(thisLevelData.levelLength);
 
         //Total number of enemies
-        this.numOfEnemies = 7; 
+        this.numOfEnemies = parseFloat(thisLevelData.numOfEnemies); 
 
         //Total number of humans
         this.numOfHumans = parseFloat(thisLevelData.numOfHumans);
