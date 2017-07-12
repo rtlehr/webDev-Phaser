@@ -1,7 +1,7 @@
 {
     "levelLength": "1",
     "numOfEnemies": "15",
-    "numOfHumans": "6",
+    "numOfHumans": "10",
     "UFOSpeed": "100",
     "score": "0",
     "maxShieldPower": "500",
