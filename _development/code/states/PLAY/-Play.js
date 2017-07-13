@@ -477,7 +477,7 @@
 
         //Create the enemy ships
 
-        this.createMultiEnemies(this.LevelData.enemies[0].enemyCount, Game[this.LevelData.enemies[0].enemyType]);
+        this.createMultiEnemies(this.LevelData.enemies[0].enemyCount, Game[this.LevelData.enemies[0].enemyClass], this.LevelData.enemies[0].attributes);
 
         //Check to see if a new UFO is needed 
         this.game.time.events.loop(this.checkUFOCountTime, this.checkUFOcount, this);

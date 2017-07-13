@@ -1,9 +1,16 @@
 {
     "levelLength": "1",
+    "backgroundImages": [
+        "assets/images/landscape/layer0.png",
+        "assets/images/landscape/layer1.png",
+        "assets/images/landscape/layer2.png",
+        "assets/images/landscape/layer3.png"
+    ],
     "enemies": [{
-        "enemyType": "EnemySaucer",
+        "name": "Kidnapping Saucer",
+        "enemyClass": "EnemySaucer",
         "enemyCount": "7",
-        "birthRate": "100",
+        "birthChance": "100",
         "maxHealth": "100",
         "attributes": {
             "speed": "100",

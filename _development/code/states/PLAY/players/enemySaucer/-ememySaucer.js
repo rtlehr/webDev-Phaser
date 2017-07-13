@@ -18,7 +18,7 @@
     Game.preloadItems.push({ type: "image", name: "enemySaucer", path: "assets/images/enemySaucer.png" });
     Game.preloadItems.push({ type: "jsonHash", name: "alienSaucer", image: "assets/images/alienSaucer.png", jsonData: "assets/images/alienSaucer.json" });
 
-    Game.EnemySaucer = function(level) {
+    Game.EnemySaucer = function(level, attributes) {
 
         /**
          * A reference to the currently running level.
@@ -104,6 +104,25 @@
          */
 
         this.hasHuman = false;
+
+        /**
+         * Reference to the human assigned to this enemy ship
+         *
+         * @property myHuman
+         * @type {Phaser.Sprite}
+         */
+
+        this.myHuman = null;
+
+        /**
+         * Atributes for this character to work
+         * These come from the level JSON file and are passed here when the object gets created
+         *
+         * @property attributes
+         * @type Object
+         */
+
+        this.attributes = attributes;
 
         /**
          * Reference to the human assigned to this enemy ship
@@ -296,7 +315,7 @@
                 this.level.UFOkillCount++;
             } else {
                 this.level.UFOkillCount = 0;
-                this.level.UFOSpeed = (this.level.UFOSpeed * this.level.ufoSpeedIncrease);
+                this.level.UFOSpeed = (this.attributes.speed * this.attributes.speedIncrease);
             }
 
             //Add one to the score of the game
