@@ -476,8 +476,8 @@
         this.createMultiFriends(this.numOfHumans);
 
         //Create the enemy ships
-        console.log("enemy: " + Game[this.LevelData.enemies[0].enemyType]);
-        this.createMultiEnemies(this.numOfEnemies, Game[this.LevelData.enemies[0].enemyType]);
+
+        this.createMultiEnemies(this.LevelData.enemies[0].enemyCount, Game[this.LevelData.enemies[0].enemyType]);
 
         //Check to see if a new UFO is needed 
         this.game.time.events.loop(this.checkUFOCountTime, this.checkUFOcount, this);
@@ -502,7 +502,7 @@
         this.levelLength = parseFloat(this.LevelData.levelLength);
 
         //Total number of enemies
-        this.numOfEnemies = parseFloat(this.LevelData.numOfEnemies); 
+        this.numOfEnemies = parseFloat(this.LevelData.numOfEnemies);
 
         //Total number of humans
         this.numOfHumans = parseFloat(this.LevelData.numOfHumans);
