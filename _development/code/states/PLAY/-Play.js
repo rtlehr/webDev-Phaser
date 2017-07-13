@@ -366,6 +366,8 @@
 
         this.groundLevel = null;
 
+        this.levelData;
+
 
     };
 
@@ -474,7 +476,8 @@
         this.createMultiFriends(this.numOfHumans);
 
         //Create the enemy ships
-        this.createMultiEnemies(this.numOfEnemies, Game.EnemySaucer);
+        console.log("enemy: " + Game[this.LevelData.enemies[0].enemyType]);
+        this.createMultiEnemies(this.numOfEnemies, Game[this.LevelData.enemies[0].enemyType]);
 
         //Check to see if a new UFO is needed 
         this.game.time.events.loop(this.checkUFOCountTime, this.checkUFOcount, this);
@@ -493,70 +496,70 @@
 
     Game.State.Play.prototype.setLevelParams = function() {
 
-        var thisLevelData = this.game.cache.getJSON('levelData');
+        this.LevelData = this.game.cache.getJSON('levelData');
 
         //sets the size of the level
-        this.levelLength = parseFloat(thisLevelData.levelLength);
+        this.levelLength = parseFloat(this.LevelData.levelLength);
 
         //Total number of enemies
-        this.numOfEnemies = parseFloat(thisLevelData.numOfEnemies); 
+        this.numOfEnemies = parseFloat(this.LevelData.numOfEnemies); 
 
         //Total number of humans
-        this.numOfHumans = parseFloat(thisLevelData.numOfHumans);
+        this.numOfHumans = parseFloat(this.LevelData.numOfHumans);
 
         //Set base speed of the UFOs
-        this.UFOSpeed = parseFloat(thisLevelData.UFOSpeed);
+        this.UFOSpeed = parseFloat(this.LevelData.UFOSpeed);
 
         //holds the score of the game (total number of UFO kills)
-        this.score = parseFloat(thisLevelData.score);
+        this.score = parseFloat(this.LevelData.score);
 
         //the max power of the shield (the higher the number the longer the shield can be on)
-        this.maxShieldPower = parseFloat(thisLevelData.maxShieldPower);
+        this.maxShieldPower = parseFloat(this.LevelData.maxShieldPower);
 
         //Holds the current shield power
         this.shieldPower = this.maxShieldPower;
 
         //How fast the sheild is drained at (the higher the number the faster it's drainined)
-        this.shieldDrain = parseFloat(thisLevelData.shieldDrain);
+        this.shieldDrain = parseFloat(this.LevelData.shieldDrain);
 
         //the amount the power blaster is fully charged at (the higher the number the longer it takes to full power)
-        this.powerBlastChargedAt = parseFloat(thisLevelData.powerBlastDamageRate);
+        this.powerBlastChargedAt = parseFloat(this.LevelData.powerBlastDamageRate);
 
         //Holds the power blast current amount
         this.powerBlastAmount = this.powerBlastChargedAt;
 
         //when this.UFOkillCount == this.numOfEnemies the UFOs get faster
-        this.UFOkillCount = parseFloat(thisLevelData.UFOkillCount);
+        this.UFOkillCount = parseFloat(this.LevelData.UFOkillCount);
 
         //THe amount the UFOs increase there speed by
-        this.ufoSpeedIncrease = parseFloat(thisLevelData.ufoSpeedIncrease);
+        this.ufoSpeedIncrease = parseFloat(this.LevelData.ufoSpeedIncrease);
 
         //set the heros max life level
-        this.heroMaxLife = parseFloat(thisLevelData.heroMaxLife);
+        this.heroMaxLife = parseFloat(this.LevelData.heroMaxLife);
 
         //Set the amount of health for the enemy ships
-        this.enemyMaxHealth = parseFloat(thisLevelData.enemyMaxHealth);
+        this.enemyMaxHealth = parseFloat(this.LevelData.enemyMaxHealth);
 
         //set damage rate for the laser
-        this.laserDamageRate = parseFloat(thisLevelData.laserDamageRate);
+        this.laserDamageRate = parseFloat(this.LevelData.laserDamageRate);
 
         //set damage rate for the shield
-        this.shieldDamageRate = parseFloat(thisLevelData.shieldDamageRate);
+        this.shieldDamageRate = parseFloat(this.LevelData.shieldDamageRate);
 
         //set damage rate for the power blaster
-        this.powerBlastDamageRate = parseFloat(thisLevelData.powerBlastDamageRate);
+        this.powerBlastDamageRate = parseFloat(this.LevelData.powerBlastDamageRate);
 
         //set damage rate for the rocket
-        this.rocketDamageRate = parseFloat(thisLevelData.rocketDamageRate);
+        this.rocketDamageRate = parseFloat(this.LevelData.rocketDamageRate);
 
         //set the heros current life level
         this.heroCurrentLife = this.heroMaxLife;
 
         //Set UFO check time
-        this.checkUFOCountTime = parseFloat(thisLevelData.checkUFOCountTime);
+        this.checkUFOCountTime = parseFloat(this.LevelData.checkUFOCountTime);
 
         //The speed the mother ship moves
-        this.motherShipSpeed = parseFloat(thisLevelData.motherShipSpeed);
+        this.motherShipSpeed = parseFloat(this.LevelData.motherShipSpeed);
 
         //Set the ground level
         this.groundLevel = 520;

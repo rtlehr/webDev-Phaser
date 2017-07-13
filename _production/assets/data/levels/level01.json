@@ -1,21 +1,33 @@
-{
-    "levelLength": "1",
-    "numOfEnemies": "15",
-    "numOfHumans": "10",
-    "UFOSpeed": "100",
-    "score": "0",
-    "maxShieldPower": "500",
-    "shieldDrain": "5",
-    "powerBlastChargedAt": "1000",
-    "UFOkillCount": "0",
-    "ufoSpeedIncrease": "1.25",
-    "heroMaxLife": "1000",
-    "enemyMaxHealth": "100",
-    "laserDamageRate": "100",
-    "shieldDamageRate": "100",
-    "powerBlastDamageRate": "100",
-    "rocketDamageRate": "100",
-    "checkUFOCountTime": "3000",
-    "motherShipSpeed": "3",
-    "groundLevel": "520"
+{  
+   "levelLength":"1",
+   "enemies":[  
+      {  
+         "enemyType":"EnemySaucer",
+         "enemyCount":"7",
+         "birthRate":"100",
+         "maxHealth":"100",
+         "attributes":{  
+            "speed":"100",
+            "speedIncrease":"1.25"
+         }
+      }
+   ],
+   "numOfEnemies":"15",
+   "numOfHumans":"10",
+   "UFOSpeed":"100",
+   "score":"0",
+   "maxShieldPower":"500",
+   "shieldDrain":"5",
+   "powerBlastChargedAt":"1000",
+   "UFOkillCount":"0",
+   "ufoSpeedIncrease":"1.25",
+   "heroMaxLife":"1000",
+   "enemyMaxHealth":"100",
+   "laserDamageRate":"100",
+   "shieldDamageRate":"100",
+   "powerBlastDamageRate":"100",
+   "rocketDamageRate":"100",
+   "checkUFOCountTime":"3000",
+   "motherShipSpeed":"3",
+   "groundLevel":"520"
 }
