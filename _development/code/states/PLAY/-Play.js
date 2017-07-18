@@ -366,8 +366,23 @@
 
         this.groundLevel = null;
 
-        this.levelData;
+        /**
+         * The Y position of the ground
+         *
+         * @property masterEnemyAI
+         * @type {Class}
+         */
 
+        this.masterEnemyAI = null;
+
+        /**
+         * Holds data from the level JSON
+         *
+         * @property levelData
+         * @type {Object}
+         */
+
+        this.levelData;
 
     };
 
@@ -384,6 +399,9 @@
 
         //Create the parallax object
         this.parallax = new Parallax(this.game);
+
+        //create the instance of the masterEnemyAI
+        this.masterEnemyAI = new masterEnemyAI(this);
 
         //Set this level params
         this.setLevelParams();
@@ -666,6 +684,7 @@
      */
 
     Game.State.Play.prototype.checkUFOcount = function() {
+
         //Get the first dead enemy
         reviveMe = this.enemyGroup.getFirstDead();
 
@@ -673,6 +692,7 @@
         if (reviveMe) {
             this.reviveEnemy(reviveMe);
         }
+
     };
 
     /**

@@ -1072,6 +1072,141 @@ GameInterface.prototype =
 })();
 
 /**
+ * Controls how the enemies work as a group
+ *
+ * @class masterEnemyAI
+ * @constructor
+ * @param {String} msg A description of...
+ * 
+ */
+
+(function() {
+
+    masterEnemyAI = function(level) {
+
+        /**
+         * A reference to the currently running level.
+         * 
+         * @property level
+         * @type {Object}
+         */
+
+        this.level = level;
+
+        /**
+         * Holds reference to all the enemies
+         * a new multidemensional array is created for each type of enemy
+         * 
+         * @property enemies
+         * @type {Array}
+         */
+
+        this.enemies = [];
+
+        this.init();
+    };
+
+    masterEnemyAI.prototype.init = function() {
+        console.log("Master Enemy AI created");
+    }
+
+    /**
+     * Adds the enemies to the pool 
+     *
+     * @method addEnemy
+     * @param {enemy} the enemy object that was just created
+     */
+
+    masterEnemyAI.prototype.addEnemy = function(enemy, birthChance, priority) {
+
+        var enemyExists = false;
+
+        var lastBirthChance = 0;
+
+        for (var count = 0; count < this.enemies.length; count++) {
+
+            if (this.enemies[count].name == enemy.name) {
+
+                this.enemies[count].enemies.push(enemy);
+
+                this.enemies[count].enemies[this.enemies[count].enemies.length - 1].setAiArrayPos(this.enemies[count].enemies.length - 1);
+
+                enemyExists = true;
+                break;
+
+            }
+
+        }
+
+        //create a new enemy reference
+        if (!enemyExists) {
+
+            this.enemies.push({});
+
+            this.enemies[this.enemies.length - 1].name = enemy.name;
+
+            this.enemies[this.enemies.length - 1].lowBirthChance = lastBirthChance;
+
+            lastBirthChance += parseFloat(birthChance);
+
+            this.enemies[this.enemies.length - 1].highBirthChance = lastBirthChance + parseFloat(birthChance);
+
+            this.enemies[this.enemies.length - 1].priority = priority;
+
+            this.enemies[this.enemies.length - 1].currentPriority = 0;
+
+            this.enemies[this.enemies.length - 1].enemies = [];
+
+            this.enemies[this.enemies.length - 1].enemies.push(enemy);
+
+            this.enemies[this.enemies.length - 1].enemies[0].setAiArrayPos(0);
+
+
+        }
+
+        console.log("enemy: " + this.enemies[this.enemies.length - 1].birthChance);
+
+    }
+
+    /**
+     * Adds an enemy to the play field based on the birthChance of that enemey 
+     *
+     * @method birthEnemy
+     */
+
+    masterEnemyAI.prototype.birthEnemy = function() {
+
+        var birthNumber = (Math.random() * 100) + 1;
+
+        console.log("birthNumber: " + birthNumber);
+
+        for (var count = 0; count < this.enemies.length; count++) {
+
+            if (birthNumber >= this.enemies[count].lowBirthChance &&
+                birthNumber < this.enemies[count].highBirthChance &&
+                //If currentPriotiy is higher than the number of priorities, then do not birth this enemy
+                this.enemies[count].currentPriority <= this.enemies[count].priority.length) {
+                //birth this enemy
+                //remove from this.enemies
+                //add to this.ectiveEnemies
+                //recalc lowBirthChance and highBirthChance
+                break;
+            }
+        }
+
+    }
+
+    /**
+     * Adds an enemy to the play field based on the birthChance of that enemey 
+     *
+     * @method recalcBirthChance
+     */
+
+    masterEnemyAI.prototype.recalcBirthChance = function() {};
+
+
+})();
+/**
  * @author       Ross Lehr <itsme@rosslehr.com>
  * @copyright    2014 Ross Lehr
  */
@@ -1819,8 +1954,23 @@ GameInterface.prototype =
 
         this.groundLevel = null;
 
-        this.levelData;
+        /**
+         * The Y position of the ground
+         *
+         * @property masterEnemyAI
+         * @type {Class}
+         */
 
+        this.masterEnemyAI = null;
+
+        /**
+         * Holds data from the level JSON
+         *
+         * @property levelData
+         * @type {Object}
+         */
+
+        this.levelData;
 
     };
 
@@ -1837,6 +1987,9 @@ GameInterface.prototype =
 
         //Create the parallax object
         this.parallax = new Parallax(this.game);
+
+        //create the instance of the masterEnemyAI
+        this.masterEnemyAI = new masterEnemyAI(this);
 
         //Set this level params
         this.setLevelParams();
@@ -2119,6 +2272,7 @@ GameInterface.prototype =
      */
 
     Game.State.Play.prototype.checkUFOcount = function() {
+
         //Get the first dead enemy
         reviveMe = this.enemyGroup.getFirstDead();
 
@@ -2126,6 +2280,7 @@ GameInterface.prototype =
         if (reviveMe) {
             this.reviveEnemy(reviveMe);
         }
+
     };
 
     /**
@@ -2195,149 +2350,141 @@ GameInterface.prototype =
 
 })();
 /**
-* @author       Ross Lehr <itsme@rosslehr.com>
-* @copyright    2014 Ross Lehr
-*/
+ * @author       Ross Lehr <itsme@rosslehr.com>
+ * @copyright    2014 Ross Lehr
+ */
 
 /**
-* Holds all of the code for the collisions of the game
-* This is NOT a class, I just seperated out the collision code for orgnization
-*
-* @class Game.State.Play.collisions
-*/
+ * Holds all of the code for the collisions of the game
+ * This is NOT a class, I just seperated out the collision code for orgnization
+ *
+ * @class Game.State.Play.collisions
+ */
 
-(function () {
-   	
-	
-	/**
-	* Manages the collisions between the weaponGroup and the enemyGroup 
-	*
-	* @method weaponCollision
-	* @param weapon The weapon that was fired
-	* @param enemy The enemy that the weapon hit
-	*/
-	
-	 Game.State.Play.prototype.weaponCollision = function(weapon, enemy)
-	{
-		//Subtract the damage the we get from weapon.getDamageRate() from the enemy (damage() is in the Phaser.Sprite class)
-		enemy.onHit(weapon.getDamageRate());
+(function() {
 
-	};
-	
-	/**
-	* Manages the collisions between the rocket and the enemyGroup 
-	*
-	* @method rocketCollision
-	* @param rocke The rocket
-	* @param enemy The enemy that the weapon hit
-	*/
-	
-	 Game.State.Play.prototype.rocketCollision = function(rocket, enemy)
-	{
-		//subtract points from the rockets life		
-		rocket.damage(enemy.getDamageRate());
-		
-		//update the rockets life in the game interface
-		this.gameInterface.setHeroLifeMessage(Math.round((rocket.health/this.heroMaxLife)*100));
-		
-		//Subtract the damage the we get from weapon.getDamageRate() from the enemy (damage() is in the Phaser.Sprite class)
-		enemy.onHit(rocket.getDamageRate());
-	};
-	
-	/**
-	* Manages the collisions between the rocket and the mother ship 
-	*
-	* @method rocketMotherCollision
-	* @param rocket The rocket
-	* @param mother The mother ship
-	*/
-	
-	 Game.State.Play.prototype.rocketMotherCollision = function(rocket, mother)
-	{
-		//If the shield is off when the rocket hits the Mother Ship, then damage the ship
-		if(!this.shield.isShieldOn())
-		{
-			//Subtract points from the rocket
-			rocket.damage(mother.getDamageRate());
 
-			//update the rockets life in the game interface
-			this.gameInterface.setHeroLifeMessage(Math.round((rocket.health/this.heroMaxLife)*100));	
-		}
-	};
-	
-	/**
-	* Manages the collisions between the bulletGroup and the enemyGroup 
-	*
-	* @method rocketMotherCollision
-	* @param bullet The bullet that hit the enemy ship
-	* @param{enemy The enemy ship that was hit by the bullet
-	*/
-	
-     Game.State.Play.prototype.collisionHandler = function(bullet, enemy) {
-        
+    /**
+     * Manages the collisions between the weaponGroup and the enemyGroup 
+     *
+     * @method weaponCollision
+     * @param weapon The weapon that was fired
+     * @param enemy The enemy that the weapon hit
+     */
+
+    Game.State.Play.prototype.weaponCollision = function(weapon, enemy) {
+        //Subtract the damage the we get from weapon.getDamageRate() from the enemy (damage() is in the Phaser.Sprite class)
+        enemy.onHit(weapon.getDamageRate());
+
+    };
+
+    /**
+     * Manages the collisions between the rocket and the enemyGroup 
+     *
+     * @method rocketCollision
+     * @param rocket The rocket
+     * @param enemy The enemy that the weapon hit
+     */
+
+    Game.State.Play.prototype.rocketCollision = function(rocket, enemy) {
+        //subtract points from the rockets life		
+        rocket.damage(enemy.getDamageRate());
+
+        //update the rockets life in the game interface
+        this.gameInterface.setHeroLifeMessage(Math.round((rocket.health / this.heroMaxLife) * 100));
+
+        //Subtract the damage the we get from weapon.getDamageRate() from the enemy (damage() is in the Phaser.Sprite class)
+        enemy.onHit(rocket.getDamageRate());
+    };
+
+    /**
+     * Manages the collisions between the rocket and the mother ship 
+     *
+     * @method rocketMotherCollision
+     * @param rocket The rocket
+     * @param mother The mother ship
+     */
+
+    Game.State.Play.prototype.rocketMotherCollision = function(rocket, mother) {
+        //If the shield is off when the rocket hits the Mother Ship, then damage the ship
+        if (!this.shield.isShieldOn()) {
+            //Subtract points from the rocket
+            rocket.damage(mother.getDamageRate());
+
+            //update the rockets life in the game interface
+            this.gameInterface.setHeroLifeMessage(Math.round((rocket.health / this.heroMaxLife) * 100));
+        }
+    };
+
+    /**
+     * Manages the collisions between the bulletGroup and the enemyGroup 
+     *
+     * @method rocketMotherCollision
+     * @param bullet The bullet that hit the enemy ship
+     * @param{enemy The enemy ship that was hit by the bullet
+     */
+
+    Game.State.Play.prototype.collisionHandler = function(bullet, enemy) {
+
         //kill the bullet
         bullet.kill();
-        
-		//Subtract the damage the we get from weapon.getDamageRate() from the enemy (damage() is in the Phaser.Sprite class)
-		enemy.onHit(bullet.getDamageRate());
+
+        //Subtract the damage the we get from weapon.getDamageRate() from the enemy (damage() is in the Phaser.Sprite class)
+        enemy.onHit(bullet.getDamageRate());
 
     };
-	
-	/**
-	* Manages the collision between a human and the enemy ship 
-	* This returns the enemy ship back to the mother ship with the human in tow
-	*
-	* @method backToShip
-	* @param human The human
-	* @param enemy The enemy ship
-	*/
-	
-     Game.State.Play.prototype.backToShip = function(human,enemy)
-    {
-		//If the human is on the ground.  If a human is falling then do not allow a UFO to kidnap them
-		if(human.y == this.groundLevel)
-		{
-			//Kill the human
-			human.setCurrentState("humanCaptured");
 
-			//Set the state of the UFO to backToMother so the UFO returns to the mother ship
-			//We set the name of the sprite to the instance of its enemySaucer object in the this.enemy array, so we can refernce it with enemy["name"]
-			enemy.setCurrentState("backToMother");
-			//set the hasHuman bool to true
-			enemy.switchHasHuman();
-			
-		}
-		
+    /**
+     * Manages the collision between a human and the enemy ship 
+     * This returns the enemy ship back to the mother ship with the human in tow
+     *
+     * @method backToShip
+     * @param human The human
+     * @param enemy The enemy ship
+     */
+
+    Game.State.Play.prototype.backToShip = function(human, enemy) {
+        //If the human is on the ground.  If a human is falling then do not allow a UFO to kidnap them
+        if (human.y == this.groundLevel) {
+            //Kill the human
+            human.setCurrentState("humanCaptured");
+
+            //Set the state of the UFO to backToMother so the UFO returns to the mother ship
+            //We set the name of the sprite to the instance of its enemySaucer object in the this.enemy array, so we can refernce it with enemy["name"]
+            enemy.setCurrentState("backToMother");
+            //set the hasHuman bool to true
+            enemy.switchHasHuman();
+
+        }
+
     };
-	
-	/**
-	* Manages the collision between a mother ship and the enemy ship 
-	* AFTER the enemy ship has captured a humn
-	*
-	* @method backToShip
-	* @param mothership The mother ship
-	* @param enemy The enemy ship that hit the mother ship
-	*/
-	
-     Game.State.Play.prototype.enemyHome = function(motherShip,enemy)
-    {
-		
-		//If the UFO has a human.  
-		if(enemy.hasHuman)
-		{
-			
-			//Destroy the human sprite
-			enemy.myHuman.destroy();
-			
-			//Kill the enemy sprite
-			enemy.damage(enemy.health);
-			enemy.clean();
-			enemy.setCurrentState("whatDoIDo");
-			
-		}
-        
+
+    /**
+     * Manages the collision between a mother ship and the enemy ship 
+     * AFTER the enemy ship has captured a humn
+     *
+     * @method backToShip
+     * @param mothership The mother ship
+     * @param enemy The enemy ship that hit the mother ship
+     */
+
+    Game.State.Play.prototype.enemyHome = function(motherShip, enemy) {
+
+        //If the UFO has a human.  
+        if (enemy.hasHuman) {
+
+            //Destroy the human sprite
+            enemy.myHuman.destroy();
+
+            //Kill the enemy sprite
+            enemy.damage(enemy.health);
+            enemy.clean();
+            enemy.setCurrentState("whatDoIDo");
+
+        }
+
     };
-	
+
 })();
 /**
  * @author       Ross Lehr <itsme@rosslehr.com>
@@ -2377,23 +2524,36 @@ GameInterface.prototype =
     };
 
     /**
-    * Creates the enemies for the game and puts them in the enemyGroup 
-    *
-    * @method createEnemy
-    8 @param {enemyToCreate} The class of the enemy to create
-    */
+     * Creates the enemies for the game and puts them in the enemyGroup 
+     *
+     * @method createEnemy
+     * @param {enemyToCreate} The class of the enemy to create
+     * @param {attributes} attributes the enemy class needs (comes from the JSON level file)
+     */
 
     Game.State.Play.prototype.createEnemy = function(enemyToCreate, attributes) {
 
+        //Create the enemy
         this.enemy = new enemyToCreate(this, attributes);
+
+        //Add enemy name
+        this.enemy.setName(this.LevelData.enemies[0].name);
+
+        //add health to the created enemy
         this.enemy.health = this.enemyMaxHealth;
+
+        //Add the new enemy to the enemy group
         this.enemyGroup.add(game.add.existing(this.enemy));
+
+        //Call the onCreate function
         this.enemy.onCreate();
+
+        this.masterEnemyAI.addEnemy(this.enemy, this.LevelData.enemies[0].birthChance, this.LevelData.enemies[0].priority);
 
     };
 
     /**
-     * Creates multiple number of enemies with one call 
+     * Creates multiple number of the same enemy with one call 
      *
      * @method createMultiEnemies
      * @param {numOfEnemies} the total number of enemies to create
@@ -2565,6 +2725,15 @@ GameInterface.prototype =
         this.attributes = attributes;
 
         /**
+         * Holds this objects array position in the masterEnemyAI
+         *
+         * @property aiArrayPos
+         * @type Number
+         */
+
+        this.aiArrayPos = null;
+
+        /**
          * Reference to the human assigned to this enemy ship
          *
          * @property myHuman
@@ -2575,7 +2744,7 @@ GameInterface.prototype =
 
         Phaser.Sprite.call(this, this.level.game, this.level.mothership.x, this.level.mothership.y, 'alienSaucer');
         this.anchor.setTo(0.5, 0.5);
-        this.name = "enemySaucer";
+        //this.name = "enemySaucer";
 
         //just for testing
         this.animations.add('fly', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
@@ -2663,8 +2832,26 @@ GameInterface.prototype =
      */
 
     Game.EnemySaucer.prototype.setName = function(name) {
+
         this.name = name;
+
     };
+
+    /**
+     * Set the masterEnemyAI array number  
+     *
+     * @method setAiArrayPos
+     * @param {name} Number vaule of the name
+     */
+
+    Game.EnemySaucer.prototype.setAiArrayPos = function(pos) {
+
+        this.aiArrayPos = pos
+
+        console.log("this.aiArrayPos: " + this.aiArrayPos);
+
+    };
+
 
     /**
      * Switch the bool value  
@@ -2698,11 +2885,13 @@ GameInterface.prototype =
     Game.EnemySaucer.prototype.onCreate = function() {
         //If there are no humans to take, then the new UFO will chase the hero
         chaseRocket = true;
-        //Loop thru the friends
+
+        //Loop thru the friends, one ship for every human and one for the hero is created
         for (count = 0; count < this.level.friendGroup.length; count++) {
 
             //Check if the human already has a UFO assigned to it (null = no UFO assigned)
             if (this.level.friendGroup.getAt(count).ufo === null) {
+
                 //Tell the UFO which human to go after
                 this.setHuman(this.level.friendGroup.getAt(count));
                 //Tell the human which UFO is chasing him
@@ -2718,12 +2907,15 @@ GameInterface.prototype =
         }
 
         //If all the humans already have a UFO assigned to them
+        //Need to add some randomness here, so ships do not over lap each other
         if (chaseRocket) {
             //Tell the UFO where the hero is
             this.setHero();
             //Set the UFOs update state to chase the hero
             this.setCurrentState("chaseRocket");
         }
+
+
 
     };
 
@@ -2740,7 +2932,7 @@ GameInterface.prototype =
         if (!this.alive) {
             //If the UFO is targeting a human
             if (this.myHuman !== null) {
-                //Sllow the human to fall back to earth
+                //Allow the human to fall back to earth
                 this.myHuman.setCurrentState("humanFall");
                 //remove the UFO from the human (the humans object is stored in the "myHuman" var in the UFOs object)
                 this.myHuman.ufo = null;
@@ -2763,7 +2955,132 @@ GameInterface.prototype =
 
             //Update the game interfaces score text
             this.level.gameInterface.setScoreMessage(this.level.score);
+
+            /* if there are more humans than enemies, set this masterEnemyAI to 0 */
         }
+
+    };
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method chase
+     */
+
+    Game.EnemySaucer.prototype.chase = function(what) {};
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method capture
+     */
+
+    Game.EnemySaucer.prototype.capture = function(what) {
+
+        console.log("Game.EnemySaucer.prototype.capture");
+        /*
+        loop thru people, if one is free go after them
+
+        if not
+
+        set currentPriorty masterEnemyAI to priority.length+1 (which means do not birth this enemy) for this ship
+        */
+
+        //if seccuseful return true, if not return false.
+
+        //this.setCurrentState("capture");
+    };
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method destroy
+     */
+
+    Game.EnemySaucer.prototype.destroy = function(what) {};
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method idle
+     */
+
+    Game.EnemySaucer.prototype.idle = function() {
+
+        //this.setCurrentState("idle");
+
+    };
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method return
+     */
+
+    Game.EnemySaucer.prototype.return = function(where) {
+
+        console.log("Game.EnemySaucer.prototype.return");
+
+        /*
+        If captured a human OR if the human being chased is no longer availble return to the mother ship
+        */
+
+        //this.setCurrentState("return");
+    };
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method go
+     */
+
+    Game.EnemySaucer.prototype.go = function(where) {};
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method interact
+     */
+
+    Game.EnemySaucer.prototype.interact = function(withWhat) {};
+
+})();
+/**
+ * @author       Ross Lehr <itsme@rosslehr.com>
+ * @copyright    2014 Ross Lehr
+ */
+
+/**
+ * Set the enemy ship to chase a human
+ *
+ * @class Game.EnemySaucer.capture
+ * @param {ufo} reference to the enemy ship class
+ */
+
+(function() {
+
+    Game.EnemySaucer.capture = function(ufo) {
+        this.ufo = ufo;
+
+        this.stateName = "chaseHuman";
+    };
+
+    /**
+     * Main update function  
+     *
+     * @method update
+     */
+
+    Game.EnemySaucer.capture.prototype.update = function() {
+        //Get angle from the enemy ship to the human
+        var targetAngle = this.ufo.game.math.angleBetween(
+            this.ufo.x, this.ufo.y,
+            this.ufo.myHuman.x, this.ufo.myHuman.y
+        );
+
+        //Set the velocity of the enemy ship
+        this.ufo.body.velocity.x = Math.cos(targetAngle) * this.ufo.level.UFOSpeed;
+        this.ufo.body.velocity.y = Math.sin(targetAngle) * this.ufo.level.UFOSpeed;
 
     };
 
@@ -2927,6 +3244,78 @@ GameInterface.prototype =
 	Game.EnemySaucer.Idle.prototype.update = function()
 	{};
 	
+})();
+/**
+ * @author       Ross Lehr <itsme@rosslehr.com>
+ * @copyright    2014 Ross Lehr
+ */
+
+/**
+ * Set the enemy ship to its idle state
+ *
+ * @class Game.EnemySaucer.Idle
+ * @param {ufo} reference to the enemy ship class
+ */
+
+(function() {
+
+    Game.EnemySaucer.idle = function(ufo) {
+        this.ufo = ufo;
+
+        this.stateName = "idle";
+    };
+
+    /**
+     * Main update function  
+     *
+     * @method update
+     */
+
+    Game.EnemySaucer.idle.prototype.update = function() {};
+
+})();
+/**
+ * @author       Ross Lehr <itsme@rosslehr.com>
+ * @copyright    2014 Ross Lehr
+ */
+
+/**
+ * Return the enemy ship to the mother ship after it has captured a human
+ *
+ * @class Game.EnemySaucer.return
+ * @param {ufo} reference to the enemy ship class
+ */
+
+(function() {
+
+    Game.EnemySaucer.return = function(ufo) {
+        this.ufo = ufo;
+
+        this.stateName = "BackToMother";
+    };
+
+    /**
+     * Main update function  
+     *
+     * @method update
+     */
+
+    Game.EnemySaucer.return.prototype.update = function() {
+        //Get the mother ship sprite
+        this.mothership = this.ufo.level.mothership;
+
+        //Get angle from the enemy ship to the mother ship
+        var targetAngle = this.ufo.game.math.angleBetween(
+            this.ufo.x, this.ufo.y,
+            this.mothership.x, this.mothership.y
+        );
+
+        //Set the velocity of the enemy ship
+        this.ufo.body.velocity.x = Math.cos(targetAngle) * this.ufo.level.UFOSpeed;
+        this.ufo.body.velocity.y = Math.sin(targetAngle) * this.ufo.level.UFOSpeed;
+
+    };
+
 })();
 /**
  * @author       Ross Lehr <itsme@rosslehr.com>

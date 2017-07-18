@@ -7,17 +7,18 @@
         "assets/images/landscape/layer3.png"
     ],
     "enemies": [{
-        "name": "Kidnapping Saucer",
+        "name": "enemySaucer",
         "enemyClass": "EnemySaucer",
-        "enemyCount": "7",
+        "enemyCount": "20",
         "birthChance": "100",
         "maxHealth": "100",
+        "priority": ["capture", "return"],
         "attributes": {
             "speed": "100",
             "speedIncrease": "1.25"
         }
     }],
-    "numOfHumans": "10",
+    "numOfHumans": "5",
     "UFOSpeed": "100",
     "score": "0",
     "maxShieldPower": "500",

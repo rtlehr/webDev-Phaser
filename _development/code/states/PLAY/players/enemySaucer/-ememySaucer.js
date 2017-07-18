@@ -125,6 +125,15 @@
         this.attributes = attributes;
 
         /**
+         * Holds this objects array position in the masterEnemyAI
+         *
+         * @property aiArrayPos
+         * @type Number
+         */
+
+        this.aiArrayPos = null;
+
+        /**
          * Reference to the human assigned to this enemy ship
          *
          * @property myHuman
@@ -135,7 +144,7 @@
 
         Phaser.Sprite.call(this, this.level.game, this.level.mothership.x, this.level.mothership.y, 'alienSaucer');
         this.anchor.setTo(0.5, 0.5);
-        this.name = "enemySaucer";
+        //this.name = "enemySaucer";
 
         //just for testing
         this.animations.add('fly', [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
@@ -223,8 +232,26 @@
      */
 
     Game.EnemySaucer.prototype.setName = function(name) {
+
         this.name = name;
+
     };
+
+    /**
+     * Set the masterEnemyAI array number  
+     *
+     * @method setAiArrayPos
+     * @param {name} Number vaule of the name
+     */
+
+    Game.EnemySaucer.prototype.setAiArrayPos = function(pos) {
+
+        this.aiArrayPos = pos
+
+        console.log("this.aiArrayPos: " + this.aiArrayPos);
+
+    };
+
 
     /**
      * Switch the bool value  
@@ -258,11 +285,13 @@
     Game.EnemySaucer.prototype.onCreate = function() {
         //If there are no humans to take, then the new UFO will chase the hero
         chaseRocket = true;
-        //Loop thru the friends
+
+        //Loop thru the friends, one ship for every human and one for the hero is created
         for (count = 0; count < this.level.friendGroup.length; count++) {
 
             //Check if the human already has a UFO assigned to it (null = no UFO assigned)
             if (this.level.friendGroup.getAt(count).ufo === null) {
+
                 //Tell the UFO which human to go after
                 this.setHuman(this.level.friendGroup.getAt(count));
                 //Tell the human which UFO is chasing him
@@ -278,12 +307,15 @@
         }
 
         //If all the humans already have a UFO assigned to them
+        //Need to add some randomness here, so ships do not over lap each other
         if (chaseRocket) {
             //Tell the UFO where the hero is
             this.setHero();
             //Set the UFOs update state to chase the hero
             this.setCurrentState("chaseRocket");
         }
+
+
 
     };
 
@@ -300,7 +332,7 @@
         if (!this.alive) {
             //If the UFO is targeting a human
             if (this.myHuman !== null) {
-                //Sllow the human to fall back to earth
+                //Allow the human to fall back to earth
                 this.myHuman.setCurrentState("humanFall");
                 //remove the UFO from the human (the humans object is stored in the "myHuman" var in the UFOs object)
                 this.myHuman.ufo = null;
@@ -323,8 +355,93 @@
 
             //Update the game interfaces score text
             this.level.gameInterface.setScoreMessage(this.level.score);
+
+            /* if there are more humans than enemies, set this masterEnemyAI to 0 */
         }
 
     };
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method chase
+     */
+
+    Game.EnemySaucer.prototype.chase = function(what) {};
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method capture
+     */
+
+    Game.EnemySaucer.prototype.capture = function(what) {
+
+        console.log("Game.EnemySaucer.prototype.capture");
+        /*
+        loop thru people, if one is free go after them
+
+        if not
+
+        set currentPriorty masterEnemyAI to priority.length+1 (which means do not birth this enemy) for this ship
+        */
+
+        //if seccuseful return true, if not return false.
+
+        //this.setCurrentState("capture");
+    };
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method destroy
+     */
+
+    Game.EnemySaucer.prototype.destroy = function(what) {};
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method idle
+     */
+
+    Game.EnemySaucer.prototype.idle = function() {
+
+        //this.setCurrentState("idle");
+
+    };
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method return
+     */
+
+    Game.EnemySaucer.prototype.return = function(where) {
+
+        console.log("Game.EnemySaucer.prototype.return");
+
+        /*
+        If captured a human OR if the human being chased is no longer availble return to the mother ship
+        */
+
+        //this.setCurrentState("return");
+    };
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method go
+     */
+
+    Game.EnemySaucer.prototype.go = function(where) {};
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
+     * @method interact
+     */
+
+    Game.EnemySaucer.prototype.interact = function(withWhat) {};
 
 })();
