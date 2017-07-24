@@ -7,9 +7,9 @@
  * 
  */
 
-(function() {
+(function () {
 
-    masterEnemyAI = function(level) {
+    masterEnemyAI = function (level) {
 
         /**
          * A reference to the currently running level.
@@ -39,10 +39,12 @@
 
         this.activeEnemies = [];
 
+        this.enemySauceIndex = 0;
+
         this.init();
     };
 
-    masterEnemyAI.prototype.init = function() {
+    masterEnemyAI.prototype.init = function () {
         console.log("Master Enemy AI created");
     }
 
@@ -53,7 +55,7 @@
      * @param {enemy} the enemy object that was just created
      */
 
-    masterEnemyAI.prototype.addEnemy = function(enemy, birthChance, priority) {
+    masterEnemyAI.prototype.addEnemy = function (enemy, data) {
 
         var enemyExists = false;
 
@@ -68,6 +70,7 @@
                 this.enemies[count].enemies[this.enemies[count].enemies.length - 1].setAiArrayPos(this.enemies[count].enemies.length - 1);
 
                 enemyExists = true;
+
                 break;
 
             }
@@ -77,32 +80,47 @@
         //create a new enemy reference
         if (!enemyExists) {
 
+            //Create the enemy object and put it in the array
             this.enemies.push({});
 
+            //Set the enemy name
             this.enemies[this.enemies.length - 1].name = enemy.name;
 
-            this.enemies[this.enemies.length - 1].birthChance = parseFloat(birthChance);
+            //Set the enemy type
+            this.enemies[this.enemies.length - 1].type = data.type;
 
+            //Set the chance that this enemy is birthed
+            this.enemies[this.enemies.length - 1].birthChance = parseFloat(data.birthChance);
+
+            //Set the low number of the chance
             this.enemies[this.enemies.length - 1].lowBirthChance = lastBirthChance;
 
-            lastBirthChance += parseFloat(birthChance);
+            lastBirthChance += parseFloat(data.birthChance);
 
-            this.enemies[this.enemies.length - 1].highBirthChance = lastBirthChance + parseFloat(birthChance);
+            //Set the high chance
+            this.enemies[this.enemies.length - 1].highBirthChance = lastBirthChance + parseFloat(data.birthChance);
 
-            this.enemies[this.enemies.length - 1].priority = priority;
+            //Set the condition that needs to be TRUE for the enemy to be birthed
+            this.enemies[this.enemies.length - 1].birthCondition = data.birthCondition;
 
+            //Set the time rate an this enemy can be born
+            this.enemies[this.enemies.length - 1].birthRate = data.birthRate;
+
+            //Set the enemies AU priority
+            this.enemies[this.enemies.length - 1].priority = data.priority;
+
+            //Set the current priority
             this.enemies[this.enemies.length - 1].currentPriority = 0;
 
+            //Create an array to store the enemy classes
             this.enemies[this.enemies.length - 1].enemies = [];
 
+            //Put the enemy class in the array
             this.enemies[this.enemies.length - 1].enemies.push(enemy);
 
             this.enemies[this.enemies.length - 1].enemies[0].setAiArrayPos(0);
 
-
         }
-
-        console.log("enemy: " + this.enemies[this.enemies.length - 1].birthChance);
 
     }
 
@@ -112,8 +130,11 @@
      * @method birthEnemy
      */
 
-    masterEnemyAI.prototype.chooseEnemyToBirth = function() {
+    masterEnemyAI.prototype.chooseEnemyToBirth = function () {
 
+
+
+        /*
         var birthNumber = (Math.random() * 100) + 1;
 
         console.log("birthNumber: " + birthNumber);
@@ -133,18 +154,37 @@
                 break;
             }
         }
+*/
 
     }
 
     /**
      * used if a perticular enemy MUST be birthed
      *
-     * @method fourceBirthEnemy
+     * @method birthEnemy
      */
 
-    masterEnemyAI.prototype.birthEnemy = function(enemy, count) {
+    masterEnemyAI.prototype.birthEnemy = function (enemy, count) {
 
-        this.recalcBirthChance();
+        //  Grab the first bullet we can from the pool
+        var enemy = this.level.enemyGroup.getChildAt(this.enemySauceIndex++);
+
+        console.log("condition: " + eval(this.enemies[this.enemies.length - 1].birthCondition))
+
+        //Everything is multiplied by the "direction" to make sure it moves in the correct direction
+        if (enemy && eval(this.enemies[this.enemies.length - 1].birthCondition)) {
+
+            //position the bullet infront of the Rocket
+            enemy.reset(this.level.mothership.x, this.level.mothership.y);
+
+            //Call the onCreate function
+            //enemy.onCreate();
+            var cP = this.enemies[this.enemies.length - 1].currentPriority ;
+            enemy[this.enemies[this.enemies.length - 1].priority[cP]]();
+
+        }
+
+        //this.recalcBirthChance();
 
     };
 
@@ -154,7 +194,7 @@
      * @method recalcBirthChance
      */
 
-    masterEnemyAI.prototype.recalcBirthChance = function() {
+    masterEnemyAI.prototype.recalcBirthChance = function () {
 
     };
 
@@ -164,7 +204,7 @@
      * @method recalcBirthChance
      */
 
-    masterEnemyAI.prototype.getEnemyShipCount = function() {
+    masterEnemyAI.prototype.getEnemyShipCount = function () {
 
     };
 
@@ -174,7 +214,7 @@
      * @method recalcBirthChance
      */
 
-    masterEnemyAI.prototype.getHumanCount = function() {
+    masterEnemyAI.prototype.getHumanCount = function () {
 
     };
 

@@ -8,11 +8,14 @@
     ],
     "enemies": [{
         "name": "enemySaucer",
-        "enemyClass": "EnemySaucer",
-        "enemyCount": "20",
+        "type" : "capture",
+        "class": "EnemySaucer",
+        "count": "20",
         "birthChance": "100",
+        "birthCondition" : "this.enemySauceIndex < this.level.friendGroup.length",
+        "birthRate" : "100",
         "maxHealth": "100",
-        "priority": ["capture", "return"],
+        "priority": ["onCreate", "return"],
         "attributes": {
             "speed": "100",
             "speedIncrease": "1.25"

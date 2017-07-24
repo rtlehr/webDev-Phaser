@@ -52,15 +52,12 @@
         this.enemy.setName(this.LevelData.enemies[0].name);
 
         //add health to the created enemy
-        this.enemy.health = this.enemyMaxHealth;
+        this.enemy.health = this.enemyMaxHealth; 
 
         //Add the new enemy to the enemy group
         this.enemyGroup.add(game.add.existing(this.enemy));
 
-        //Call the onCreate function
-        this.enemy.onCreate();
-
-        this.masterEnemyAI.addEnemy(this.enemy, this.LevelData.enemies[0].birthChance, this.LevelData.enemies[0].priority);
+        this.masterEnemyAI.addEnemy(this.enemy, this.LevelData.enemies[0]);
 
     };
 

@@ -26,13 +26,13 @@
     "dependencies": {
         "@types/greensock": "^1.15.32",
         "@types/jquery": "^2.0.48",
-        "@types/jqueryui": "^1.11.34",
-        "angular2": "^2.0.0-beta.7",
+        "@types/jqueryui": "^1.11.35",
+        "angular2": "^2.0.0-beta.21",
         "es6-promise": "^3.3.1",
         "es6-shim": "^0.33.13",
-        "reflect-metadata": "^0.1.2",
-        "rxjs": "^5.0.0-beta.2",
-        "systemjs": "^0.19.22",
+        "reflect-metadata": "^0.1.10",
+        "rxjs": "^5.4.2",
+        "systemjs": "^0.19.47",
         "zone.js": "^0.5.15"
     }
 }

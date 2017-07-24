@@ -384,6 +384,8 @@
 
         this.levelData;
 
+        this.birthCount = 0;
+
     };
 
     /**
@@ -495,7 +497,7 @@
 
         //Create the enemy ships
 
-        this.createMultiEnemies(this.LevelData.enemies[0].enemyCount, Game[this.LevelData.enemies[0].enemyClass], this.LevelData.enemies[0].attributes);
+        this.createMultiEnemies(this.LevelData.enemies[0].count, Game[this.LevelData.enemies[0].class], this.LevelData.enemies[0].attributes);
 
         //Check to see if a new UFO is needed 
         this.game.time.events.loop(this.checkUFOCountTime, this.checkUFOcount, this);
@@ -614,6 +616,16 @@
 
         //Update the game interface
         this.gameInterface.update();
+
+        //check enemies
+        if(this.birthCount === 120)
+        {
+            this.masterEnemyAI.birthEnemy();
+            this.birthCount = 0;
+        }
+        else{
+            this.birthCount++;
+        }
 
         //If the right button is clicked fire the check to see if the power blast can be fired
         if (this.gameInterface.buttonPad.checkRight()) {

@@ -1080,9 +1080,9 @@ GameInterface.prototype =
  * 
  */
 
-(function() {
+(function () {
 
-    masterEnemyAI = function(level) {
+    masterEnemyAI = function (level) {
 
         /**
          * A reference to the currently running level.
@@ -1103,10 +1103,21 @@ GameInterface.prototype =
 
         this.enemies = [];
 
+        /**
+         * Holds reference to all the active enemies
+         * 
+         * @property activeEnemies
+         * @type {Array}
+         */
+
+        this.activeEnemies = [];
+
+        this.enemySauceIndex = 0;
+
         this.init();
     };
 
-    masterEnemyAI.prototype.init = function() {
+    masterEnemyAI.prototype.init = function () {
         console.log("Master Enemy AI created");
     }
 
@@ -1117,7 +1128,7 @@ GameInterface.prototype =
      * @param {enemy} the enemy object that was just created
      */
 
-    masterEnemyAI.prototype.addEnemy = function(enemy, birthChance, priority) {
+    masterEnemyAI.prototype.addEnemy = function (enemy, data) {
 
         var enemyExists = false;
 
@@ -1132,6 +1143,7 @@ GameInterface.prototype =
                 this.enemies[count].enemies[this.enemies[count].enemies.length - 1].setAiArrayPos(this.enemies[count].enemies.length - 1);
 
                 enemyExists = true;
+
                 break;
 
             }
@@ -1141,30 +1153,47 @@ GameInterface.prototype =
         //create a new enemy reference
         if (!enemyExists) {
 
+            //Create the enemy object and put it in the array
             this.enemies.push({});
 
+            //Set the enemy name
             this.enemies[this.enemies.length - 1].name = enemy.name;
 
+            //Set the enemy type
+            this.enemies[this.enemies.length - 1].type = data.type;
+
+            //Set the chance that this enemy is birthed
+            this.enemies[this.enemies.length - 1].birthChance = parseFloat(data.birthChance);
+
+            //Set the low number of the chance
             this.enemies[this.enemies.length - 1].lowBirthChance = lastBirthChance;
 
-            lastBirthChance += parseFloat(birthChance);
+            lastBirthChance += parseFloat(data.birthChance);
 
-            this.enemies[this.enemies.length - 1].highBirthChance = lastBirthChance + parseFloat(birthChance);
+            //Set the high chance
+            this.enemies[this.enemies.length - 1].highBirthChance = lastBirthChance + parseFloat(data.birthChance);
 
-            this.enemies[this.enemies.length - 1].priority = priority;
+            //Set the condition that needs to be TRUE for the enemy to be birthed
+            this.enemies[this.enemies.length - 1].birthCondition = data.birthCondition;
 
+            //Set the time rate an this enemy can be born
+            this.enemies[this.enemies.length - 1].birthRate = data.birthRate;
+
+            //Set the enemies AU priority
+            this.enemies[this.enemies.length - 1].priority = data.priority;
+
+            //Set the current priority
             this.enemies[this.enemies.length - 1].currentPriority = 0;
 
+            //Create an array to store the enemy classes
             this.enemies[this.enemies.length - 1].enemies = [];
 
+            //Put the enemy class in the array
             this.enemies[this.enemies.length - 1].enemies.push(enemy);
 
             this.enemies[this.enemies.length - 1].enemies[0].setAiArrayPos(0);
 
-
         }
-
-        console.log("enemy: " + this.enemies[this.enemies.length - 1].birthChance);
 
     }
 
@@ -1174,8 +1203,11 @@ GameInterface.prototype =
      * @method birthEnemy
      */
 
-    masterEnemyAI.prototype.birthEnemy = function() {
+    masterEnemyAI.prototype.chooseEnemyToBirth = function () {
 
+
+
+        /*
         var birthNumber = (Math.random() * 100) + 1;
 
         console.log("birthNumber: " + birthNumber);
@@ -1190,11 +1222,44 @@ GameInterface.prototype =
                 //remove from this.enemies
                 //add to this.ectiveEnemies
                 //recalc lowBirthChance and highBirthChance
+
+                this.activeEnemies[count] = null;
                 break;
             }
         }
+*/
 
     }
+
+    /**
+     * used if a perticular enemy MUST be birthed
+     *
+     * @method birthEnemy
+     */
+
+    masterEnemyAI.prototype.birthEnemy = function (enemy, count) {
+
+        //  Grab the first bullet we can from the pool
+        var enemy = this.level.enemyGroup.getChildAt(this.enemySauceIndex++);
+
+        console.log("condition: " + eval(this.enemies[this.enemies.length - 1].birthCondition))
+
+        //Everything is multiplied by the "direction" to make sure it moves in the correct direction
+        if (enemy && eval(this.enemies[this.enemies.length - 1].birthCondition)) {
+
+            //position the bullet infront of the Rocket
+            enemy.reset(this.level.mothership.x, this.level.mothership.y);
+
+            //Call the onCreate function
+            //enemy.onCreate();
+            var cP = this.enemies[this.enemies.length - 1].currentPriority ;
+            enemy[this.enemies[this.enemies.length - 1].priority[cP]]();
+
+        }
+
+        //this.recalcBirthChance();
+
+    };
 
     /**
      * Adds an enemy to the play field based on the birthChance of that enemey 
@@ -1202,7 +1267,29 @@ GameInterface.prototype =
      * @method recalcBirthChance
      */
 
-    masterEnemyAI.prototype.recalcBirthChance = function() {};
+    masterEnemyAI.prototype.recalcBirthChance = function () {
+
+    };
+
+    /**
+     * Adds an enemy to the play field based on the birthChance of that enemey 
+     *
+     * @method recalcBirthChance
+     */
+
+    masterEnemyAI.prototype.getEnemyShipCount = function () {
+
+    };
+
+    /**
+     * Adds an enemy to the play field based on the birthChance of that enemey 
+     *
+     * @method recalcBirthChance
+     */
+
+    masterEnemyAI.prototype.getHumanCount = function () {
+
+    };
 
 
 })();
@@ -1972,6 +2059,8 @@ GameInterface.prototype =
 
         this.levelData;
 
+        this.birthCount = 0;
+
     };
 
     /**
@@ -2083,7 +2172,7 @@ GameInterface.prototype =
 
         //Create the enemy ships
 
-        this.createMultiEnemies(this.LevelData.enemies[0].enemyCount, Game[this.LevelData.enemies[0].enemyClass], this.LevelData.enemies[0].attributes);
+        this.createMultiEnemies(this.LevelData.enemies[0].count, Game[this.LevelData.enemies[0].class], this.LevelData.enemies[0].attributes);
 
         //Check to see if a new UFO is needed 
         this.game.time.events.loop(this.checkUFOCountTime, this.checkUFOcount, this);
@@ -2202,6 +2291,16 @@ GameInterface.prototype =
 
         //Update the game interface
         this.gameInterface.update();
+
+        //check enemies
+        if(this.birthCount === 120)
+        {
+            this.masterEnemyAI.birthEnemy();
+            this.birthCount = 0;
+        }
+        else{
+            this.birthCount++;
+        }
 
         //If the right button is clicked fire the check to see if the power blast can be fired
         if (this.gameInterface.buttonPad.checkRight()) {
@@ -2540,15 +2639,12 @@ GameInterface.prototype =
         this.enemy.setName(this.LevelData.enemies[0].name);
 
         //add health to the created enemy
-        this.enemy.health = this.enemyMaxHealth;
+        this.enemy.health = this.enemyMaxHealth; 
 
         //Add the new enemy to the enemy group
         this.enemyGroup.add(game.add.existing(this.enemy));
 
-        //Call the onCreate function
-        this.enemy.onCreate();
-
-        this.masterEnemyAI.addEnemy(this.enemy, this.LevelData.enemies[0].birthChance, this.LevelData.enemies[0].priority);
+        this.masterEnemyAI.addEnemy(this.enemy, this.LevelData.enemies[0]);
 
     };
 
@@ -2848,8 +2944,6 @@ GameInterface.prototype =
 
         this.aiArrayPos = pos
 
-        console.log("this.aiArrayPos: " + this.aiArrayPos);
-
     };
 
 
@@ -2964,6 +3058,20 @@ GameInterface.prototype =
     /**
      * Called when the enemy ship is hit by a weapon  
      *
+     * @method birthRule
+     */
+
+    Game.EnemySaucer.prototype.birthRule = function() 
+    {
+        //return (this.level.enemyCount < this.level.friendGroup.length);
+        
+        return true;
+
+    };
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
      * @method chase
      */
 
@@ -2977,7 +3085,6 @@ GameInterface.prototype =
 
     Game.EnemySaucer.prototype.capture = function(what) {
 
-        console.log("Game.EnemySaucer.prototype.capture");
         /*
         loop thru people, if one is free go after them
 
@@ -3019,7 +3126,6 @@ GameInterface.prototype =
 
     Game.EnemySaucer.prototype.return = function(where) {
 
-        console.log("Game.EnemySaucer.prototype.return");
 
         /*
         If captured a human OR if the human being chased is no longer availble return to the mother ship
@@ -3999,114 +4105,108 @@ GameInterface.prototype =
     };
 })();
 /**
-* @author       Ross Lehr <itsme@rosslehr.com>
-* @copyright    2014 Ross Lehr
-*/
+ * @author       Ross Lehr <itsme@rosslehr.com>
+ * @copyright    2014 Ross Lehr
+ */
 
 /**
-* Creates the rockets laser
-*
-* @class Game.Rocket.Laser
-* @extends Phaser.Sprite
-* @param {level} Reference to the current level being played
-*/
+ * Creates the rockets laser
+ *
+ * @class Game.Rocket.Laser
+ * @extends Phaser.Sprite
+ * @param {level} Reference to the current level being played
+ */
 
-(function () {
-	
-	//Loads the laser image
-	Game.preloadItems.push({type:"image",name:"bullet",path:"assets/images/bullet.png"});
+(function() {
 
-	Game.Rocket.Laser = function(level) {
+    //Loads the laser image
+    Game.preloadItems.push({ type: "image", name: "bullet", path: "assets/images/bullet.png" });
 
-		/**
-		* A reference to the currently level being run.
-		* 
-		* @property level
-		* @type {Object}
-		*/
-		
-		this.level = level;
-		
-		/**
-		* The amount od damage this weapon does
-		* 
-		* @property damageRate
-		* @type {Number}
-		*/
-		
-		this.damageRate = null;
-		
-		/**
-		* Set to true if the shield is active
-		* 
-		* @property shieldOn
-		* @type {bool}
-		* @default false
-		*/
-				
-		//Create the shield sprite
-		Phaser.Sprite.call(this, this.level.game, 0,0, 'bullet');
-		this.anchor.setTo(0,0.5);   
-		this.name = "laser";
+    Game.Rocket.Laser = function(level) {
 
-	};
+        /**
+         * A reference to the currently level being run.
+         * 
+         * @property level
+         * @type {Object}
+         */
 
-	Game.Rocket.Laser.prototype = Object.create(Phaser.Sprite.prototype);
-	Game.Rocket.Laser.prototype.constructor = Game.Rocket.Laser;
-	
-	/**
-	* Update loop for the enemy ship  
-	*
-	* @method update
-	*/
-	
-	Game.Rocket.Laser.prototype.update = function() 
-	{};
-	
-	/**
-	* Activate the shield  
-	*
-	* @method activate
-	*/
-	
-	Game.Rocket.Laser.prototype.activate = function()
-	{
-		
-	};
-	
-	/**
-	* deactivate the shield  
-	*
-	* @method deactivate
-	*/
-	
-	Game.Rocket.Laser.prototype.deactivate = function()
-	{};
-	
-	/**
-	* get the damage rate of this weapon
-	*
-	* @method getDamageRate
-	*/
-	
-	Game.Rocket.Laser.prototype.getDamageRate = function()
-	{
-		return this.damageRate;
-	};
-	
-	/**
-	* set the damage rate of this weapon
-	*
-	* @method setDamageRate
-	*/
+        this.level = level;
 
-	Game.Rocket.Laser.prototype.setDamageRate = function(damageRate)
-	{
-		this.damageRate = damageRate;
-	};
-	
+        /**
+         * The amount od damage this weapon does
+         * 
+         * @property damageRate
+         * @type {Number}
+         */
+
+        this.damageRate = null;
+
+        /**
+         * Set to true if the shield is active
+         * 
+         * @property shieldOn
+         * @type {bool}
+         * @default false
+         */
+
+        //Create the bullet sprite
+        Phaser.Sprite.call(this, this.level.game, 0, 0, 'bullet');
+        this.anchor.setTo(0, 0.5);
+        this.name = "laser";
+
+    };
+
+    Game.Rocket.Laser.prototype = Object.create(Phaser.Sprite.prototype);
+    Game.Rocket.Laser.prototype.constructor = Game.Rocket.Laser;
+
+    /**
+     * Update loop for the enemy ship  
+     *
+     * @method update
+     */
+
+    Game.Rocket.Laser.prototype.update = function() {};
+
+    /**
+     * Activate the shield  
+     *
+     * @method activate
+     */
+
+    Game.Rocket.Laser.prototype.activate = function() {
+
+    };
+
+    /**
+     * deactivate the shield  
+     *
+     * @method deactivate
+     */
+
+    Game.Rocket.Laser.prototype.deactivate = function() {};
+
+    /**
+     * get the damage rate of this weapon
+     *
+     * @method getDamageRate
+     */
+
+    Game.Rocket.Laser.prototype.getDamageRate = function() {
+        return this.damageRate;
+    };
+
+    /**
+     * set the damage rate of this weapon
+     *
+     * @method setDamageRate
+     */
+
+    Game.Rocket.Laser.prototype.setDamageRate = function(damageRate) {
+        this.damageRate = damageRate;
+    };
+
 })();
-
 /**
 * @author       Ross Lehr <itsme@rosslehr.com>
 * @copyright    2014 Ross Lehr

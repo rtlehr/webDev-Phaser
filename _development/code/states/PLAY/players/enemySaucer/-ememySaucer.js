@@ -248,8 +248,6 @@
 
         this.aiArrayPos = pos
 
-        console.log("this.aiArrayPos: " + this.aiArrayPos);
-
     };
 
 
@@ -364,6 +362,20 @@
     /**
      * Called when the enemy ship is hit by a weapon  
      *
+     * @method birthRule
+     */
+
+    Game.EnemySaucer.prototype.birthRule = function() 
+    {
+        //return (this.level.enemyCount < this.level.friendGroup.length);
+        
+        return true;
+
+    };
+
+    /**
+     * Called when the enemy ship is hit by a weapon  
+     *
      * @method chase
      */
 
@@ -377,7 +389,6 @@
 
     Game.EnemySaucer.prototype.capture = function(what) {
 
-        console.log("Game.EnemySaucer.prototype.capture");
         /*
         loop thru people, if one is free go after them
 
@@ -419,7 +430,6 @@
 
     Game.EnemySaucer.prototype.return = function(where) {
 
-        console.log("Game.EnemySaucer.prototype.return");
 
         /*
         If captured a human OR if the human being chased is no longer availble return to the mother ship
