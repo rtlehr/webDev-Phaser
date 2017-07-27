@@ -1,0 +1,72 @@
+{
+    "levelLength": "1",
+    "backgroundImages": [
+        "assets/images/landscape/layer0.png",
+        "assets/images/landscape/layer1.png",
+        "assets/images/landscape/layer2.png",
+        "assets/images/landscape/layer3.png"
+    ],
+    "enemies": [{
+            "name": "enemySaucer",
+            "type": "capture",
+            "class": "EnemySaucer",
+            "count": "5",
+            "birthChance": "50",
+            "birthCondition": "this.enemySauceIndex < this.level.friendGroup.length",
+            "birthRate": "100",
+            "maxHealth": "100",
+            "priority": ["onCreate", "return"],
+            "attributes": {
+                "speed": "100",
+                "speedIncrease": "1.25"
+            }
+        },
+        {
+            "name": "enemySaucer 2",
+            "type": "capture",
+            "class": "EnemySaucer",
+            "count": "5",
+            "birthChance": "20",
+            "birthCondition": "this.enemySauceIndex < this.level.friendGroup.length",
+            "birthRate": "100",
+            "maxHealth": "100",
+            "priority": ["onCreate", "return"],
+            "attributes": {
+                "speed": "100",
+                "speedIncrease": "1.25"
+            }
+        },
+        {
+            "name": "enemySaucer 3",
+            "type": "capture",
+            "class": "EnemySaucer",
+            "count": "5",
+            "birthChance": "30",
+            "birthCondition": "this.enemySauceIndex > this.level.friendGroup.length",
+            "birthRate": "100",
+            "maxHealth": "100",
+            "priority": ["onCreate", "return"],
+            "attributes": {
+                "speed": "100",
+                "speedIncrease": "1.25"
+            }
+        }
+    ],
+    "numOfHumans": "5",
+    "UFOSpeed": "100",
+    "score": "0",
+    "maxShieldPower": "500",
+    "shieldDrain": "5",
+    "powerBlastChargedAt": "1000",
+    "UFOkillCount": "0",
+    "ufoSpeedIncrease": "1.25",
+    "heroMaxLife": "1000",
+    "enemyMaxHealth": "100",
+    "laserDamageRate": "100",
+    "shieldDamageRate": "100",
+    "powerBlastDamageRate": "100",
+    "rocketDamageRate": "100",
+    "checkUFOCountTime": "3000",
+    "motherShipSpeed": "3",
+    "groundLevel": "520"
+}

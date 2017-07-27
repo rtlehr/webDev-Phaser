@@ -12,6 +12,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('assemble-less');
     grunt.loadNpmTasks("grunt-jsbeautifier");
+    grunt.loadNpmTasks('grunt-json-minification');
 
     // Project configuration.
     grunt.initConfig({
@@ -34,8 +35,11 @@ module.exports = function(grunt) {
             },
             applicationUglify: {
                 files: ['_production/assets/js/application.js'],
-                tasks: ['uglify:application'],
-                options: {}
+                tasks: ['uglify:application']
+            },
+            dataUglify: {
+                files: ['_development/data/*/**.json'],
+                tasks: ['json_minification']
             }
         },
         /**
@@ -114,12 +118,23 @@ module.exports = function(grunt) {
                 }
 
             }
+        },
+        json_minification: {
+            target: {
+                files: [{
+                    expand: true,
+                    cwd: '_development/data',
+                    src: ['*/**.json'],
+                    dest: '_production/assets/data',
+                    ext: '.json'
+                }]
+            }
         }
 
     });
 
     // Default task.
     //grunt.registerTask('default', ['less','concat','uglify','cssmin','watch']);
-    grunt.registerTask('default', ['less', 'cssmin', 'concat', 'uglify', 'watch']);
+    grunt.registerTask('default', ['less', 'cssmin', 'concat', 'uglify', 'json_minification', 'watch']);
 
 };
