@@ -1,2 +1,5 @@
 # Build and Release Folders
 node_modules/
+_production/assets/js/frameworks/box2d/
+_production/assets/js/frameworks/particles/
+_production/assets/js/frameworks/virtualJoystick/
