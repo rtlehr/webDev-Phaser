@@ -36,50 +36,6 @@
     };
 
     /**
-     * Creates the enemies for the game and puts them in the enemyGroup 
-     *
-     * @method createEnemy
-     * @param {enemyToCreate} The class of the enemy to create
-     * @param {attributes} attributes the enemy class needs (comes from the JSON level file)
-     */
-
-    Game.State.Play.prototype.createEnemy = function(enemyToCreate, attributes) {
-
-        //Create the enemy
-        this.enemy = new enemyToCreate(this, attributes);
-
-        //Add enemy name
-        this.enemy.setName(this.LevelData.enemies[0].name);
-
-        //add health to the created enemy
-        this.enemy.health = this.enemyMaxHealth; 
-
-        //Add the new enemy to the enemy group
-        this.enemyGroup.add(game.add.existing(this.enemy));
-
-        this.masterEnemyAI.addEnemy(this.enemy, this.LevelData.enemies[0]);
-
-    };
-
-    /**
-     * Creates multiple number of the same enemy with one call 
-     *
-     * @method createMultiEnemies
-     * @param {numOfEnemies} the total number of enemies to create
-     * @param {enemyToCreate} The class of the enemy to create
-     */
-
-    Game.State.Play.prototype.createMultiEnemies = function(numOfEnemies, enemyToCreate, attributes) {
-
-        for (var count = 0; count < numOfEnemies; count++) {
-
-            this.createEnemy(enemyToCreate, attributes);
-
-        }
-
-    };
-
-    /**
      * Revive a killed enemy 
      *
      * @method reviveEnemy

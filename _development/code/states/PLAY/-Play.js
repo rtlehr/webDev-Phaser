@@ -497,7 +497,37 @@
 
         //Create the enemy ships
 
-        this.createMultiEnemies(this.LevelData.enemies[0].count, Game[this.LevelData.enemies[0].class], this.LevelData.enemies[0].attributes);
+        console.log("this.LevelData.enemies: " + this.LevelData.enemies.length);
+
+        for (var enemyCount = 0; enemyCount < this.LevelData.enemies.length; enemyCount++) {
+
+            // this.createMultiEnemies(this.LevelData.enemies[count].count, Game[this.LevelData.enemies[count].class], this.LevelData.enemies[count].attributes);
+
+            console.log("--- Creating enemy: " + this.LevelData.enemies[enemyCount].name);
+
+            for (var count = 0; count < this.LevelData.enemies[enemyCount].count; count++) {
+
+                console.log("----- Creating enemy ship: " + count);
+
+                var enemyToCreate = Game[this.LevelData.enemies[enemyCount].class];
+
+                //Create the enemy
+                this.enemy = new enemyToCreate(this, this.LevelData.enemies[enemyCount].attributes);
+
+                //Add enemy name
+                this.enemy.setName(this.LevelData.enemies[enemyCount].name);
+
+                //add health to the created enemy
+                this.enemy.health = parseFloat(this.LevelData.enemyMaxHealth);
+
+                //Add the new enemy to the enemy group
+                this.enemyGroup.add(game.add.existing(this.enemy));
+
+                this.masterEnemyAI.addEnemy(this.enemy, this.LevelData.enemies[enemyCount]);
+
+            }
+
+        }
 
         //Check to see if a new UFO is needed 
         this.game.time.events.loop(this.checkUFOCountTime, this.checkUFOcount, this);
@@ -618,12 +648,10 @@
         this.gameInterface.update();
 
         //check enemies
-        if(this.birthCount === 120)
-        {
-            this.masterEnemyAI.birthEnemy();
+        if (this.birthCount === 120) {
+            this.masterEnemyAI.chooseEnemyToBirth();
             this.birthCount = 0;
-        }
-        else{
+        } else {
             this.birthCount++;
         }
 

@@ -7,20 +7,36 @@
         "assets/images/landscape/layer3.png"
     ],
     "enemies": [{
-        "name": "enemySaucer",
-        "type" : "capture",
-        "class": "EnemySaucer",
-        "count": "20",
-        "birthChance": "100",
-        "birthCondition" : "this.enemySauceIndex < this.level.friendGroup.length",
-        "birthRate" : "100",
-        "maxHealth": "100",
-        "priority": ["onCreate", "return"],
-        "attributes": {
-            "speed": "100",
-            "speedIncrease": "1.25"
+            "name": "enemySaucer",
+            "type": "capture",
+            "class": "EnemySaucer",
+            "count": "5",
+            "birthChance": "50",
+            "birthCondition": "this.enemySauceIndex < this.level.friendGroup.length",
+            "birthRate": "100",
+            "maxHealth": "100",
+            "priority": ["onCreate", "return"],
+            "attributes": {
+                "speed": "100",
+                "speedIncrease": "1.25"
+            }
+        },
+        {
+            "name": "enemySaucer2",
+            "type": "capture",
+            "class": "EnemySaucer",
+            "count": "5",
+            "birthChance": "50",
+            "birthCondition": "this.enemySauceIndex < this.level.friendGroup.length",
+            "birthRate": "100",
+            "maxHealth": "100",
+            "priority": ["onCreate", "return"],
+            "attributes": {
+                "speed": "100",
+                "speedIncrease": "1.25"
+            }
         }
-    }],
+    ],
     "numOfHumans": "5",
     "UFOSpeed": "100",
     "score": "0",

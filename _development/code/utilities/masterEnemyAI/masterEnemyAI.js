@@ -7,9 +7,9 @@
  * 
  */
 
-(function () {
+(function() {
 
-    masterEnemyAI = function (level) {
+    masterEnemyAI = function(level) {
 
         /**
          * A reference to the currently running level.
@@ -44,7 +44,7 @@
         this.init();
     };
 
-    masterEnemyAI.prototype.init = function () {
+    masterEnemyAI.prototype.init = function() {
         console.log("Master Enemy AI created");
     }
 
@@ -55,7 +55,7 @@
      * @param {enemy} the enemy object that was just created
      */
 
-    masterEnemyAI.prototype.addEnemy = function (enemy, data) {
+    masterEnemyAI.prototype.addEnemy = function(enemy, data) {
 
         var enemyExists = false;
 
@@ -130,9 +130,60 @@
      * @method birthEnemy
      */
 
-    masterEnemyAI.prototype.chooseEnemyToBirth = function () {
+    masterEnemyAI.prototype.chooseEnemyToBirth = function() {
+
+        var e = [];
+
+        console.log("total enemies: " + this.enemies.length);
+
+        //Find enemies who birthConditions are TRUE
+        for (var count = 0; count < this.enemies.length; count++) {
+
+            if (eval(this.enemies[count].birthCondition)) {
+
+                e.push(this.enemies[count]);
+
+                console.log(this.enemies[count].name + " is possible.");
+
+            }
+        }
+
+        var totalPrecentage = 0;
+
+        //Calculate rate possible enemies can be piked
+        //total the precent to be calculated
+        for (var count = 0; count < e.length; count++) {
+
+            totalPrecentage = e[count].birthChance;
+
+        }
+
+        console.log("totalPrecentage: " + totalPrecentage);
+
+        var lastBirthChance = 0;
+
+        //reset low and high birth chance
+        for (var count = 0; count < e.length; count++) {
+
+            //Set the low number of the chance
+            e[count].lowBirthChance = lastBirthChance;
+
+            console.log("lowBirthChance: " + e[count].lowBirthChance);
+
+            //Set the high chance
+            e[count].highBirthChance = lastBirthChance + ((100 / totalPrecentage) * e[count].birthChance);
+
+            lastBirthChance += (100 / totalPrecentage) * e[count].birthChance;
+
+            console.log("highBirthChance: " + e[count].highBirthChance);
 
 
+        }
+
+        //Pick Random Number
+        var birthNumber = (Math.random() * 100) + 1;
+
+        this.birthEnemy();
 
         /*
         var birthNumber = (Math.random() * 100) + 1;
@@ -164,7 +215,7 @@
      * @method birthEnemy
      */
 
-    masterEnemyAI.prototype.birthEnemy = function (enemy, count) {
+    masterEnemyAI.prototype.birthEnemy = function(enemy, count) {
 
         //  Grab the first bullet we can from the pool
         var enemy = this.level.enemyGroup.getChildAt(this.enemySauceIndex++);
@@ -179,7 +230,7 @@
 
             //Call the onCreate function
             //enemy.onCreate();
-            var cP = this.enemies[this.enemies.length - 1].currentPriority ;
+            var cP = this.enemies[this.enemies.length - 1].currentPriority;
             enemy[this.enemies[this.enemies.length - 1].priority[cP]]();
 
         }
@@ -194,7 +245,18 @@
      * @method recalcBirthChance
      */
 
-    masterEnemyAI.prototype.recalcBirthChance = function () {
+    masterEnemyAI.prototype.recalcBirthChance = function() {
+
+    };
+
+
+    /**
+     * Adds an enemy to the play field based on the birthChance of that enemey 
+     *
+     * @method recalcBirthChance
+     */
+
+    masterEnemyAI.prototype.recalcBirthChance = function() {
 
     };
 
@@ -204,7 +266,7 @@
      * @method recalcBirthChance
      */
 
-    masterEnemyAI.prototype.getEnemyShipCount = function () {
+    masterEnemyAI.prototype.getEnemyShipCount = function() {
 
     };
 
@@ -214,7 +276,7 @@
      * @method recalcBirthChance
      */
 
-    masterEnemyAI.prototype.getHumanCount = function () {
+    masterEnemyAI.prototype.getHumanCount = function() {
 
     };
 
