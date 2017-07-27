@@ -92,6 +92,9 @@
             //Set the chance that this enemy is birthed
             this.enemies[this.enemies.length - 1].birthChance = parseFloat(data.birthChance);
 
+            //Set the chance that this enemy is birthed
+            this.enemies[this.enemies.length - 1].enemiesAvailable = parseFloat(data.count);
+
             //Set the low number of the chance
             this.enemies[this.enemies.length - 1].lowBirthChance = lastBirthChance;
 
@@ -132,6 +135,7 @@
 
     masterEnemyAI.prototype.chooseEnemyToBirth = function() {
 
+        //Holds enemies that can be birthed
         var e = [];
 
         console.log("total enemies: " + this.enemies.length);
@@ -143,7 +147,7 @@
 
                 e.push(this.enemies[count]);
 
-                console.log(this.enemies[count].name + " is possible.");
+                console.log("-" + this.enemies[count].name + " is possible.");
 
             }
         }
@@ -154,11 +158,11 @@
         //total the precent to be calculated
         for (var count = 0; count < e.length; count++) {
 
-            totalPrecentage = e[count].birthChance;
+            totalPrecentage += e[count].birthChance;
 
         }
 
-        console.log("totalPrecentage: " + totalPrecentage);
+        console.log("--totalPrecentage " + totalPrecentage);
 
         var lastBirthChance = 0;
 
@@ -168,14 +172,14 @@
             //Set the low number of the chance
             e[count].lowBirthChance = lastBirthChance;
 
-            console.log("lowBirthChance: " + e[count].lowBirthChance);
+            console.log("---lowBirthChance for " + e[count].name + " : " + e[count].lowBirthChance);
 
             //Set the high chance
             e[count].highBirthChance = lastBirthChance + ((100 / totalPrecentage) * e[count].birthChance);
 
             lastBirthChance += (100 / totalPrecentage) * e[count].birthChance;
 
-            console.log("highBirthChance: " + e[count].highBirthChance);
+            console.log("---highBirthChance for " + e[count].name + " : " + e[count].highBirthChance);
 
 
         }

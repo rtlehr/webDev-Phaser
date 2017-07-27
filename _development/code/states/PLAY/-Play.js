@@ -386,6 +386,8 @@
 
         this.birthCount = 0;
 
+        this.enemiesAvailable = true;
+
     };
 
     /**
@@ -496,19 +498,13 @@
         this.createMultiFriends(this.numOfHumans);
 
         //Create the enemy ships
-
-        console.log("this.LevelData.enemies: " + this.LevelData.enemies.length);
-
+        //Loop thru all the ememies in the enemies loop array in the JSON
         for (var enemyCount = 0; enemyCount < this.LevelData.enemies.length; enemyCount++) {
 
-            // this.createMultiEnemies(this.LevelData.enemies[count].count, Game[this.LevelData.enemies[count].class], this.LevelData.enemies[count].attributes);
-
-            console.log("--- Creating enemy: " + this.LevelData.enemies[enemyCount].name);
-
+            //Create the individual enemies for the level
             for (var count = 0; count < this.LevelData.enemies[enemyCount].count; count++) {
 
-                console.log("----- Creating enemy ship: " + count);
-
+                //Set the class to be created
                 var enemyToCreate = Game[this.LevelData.enemies[enemyCount].class];
 
                 //Create the enemy
@@ -648,11 +644,13 @@
         this.gameInterface.update();
 
         //check enemies
-        if (this.birthCount === 120) {
-            this.masterEnemyAI.chooseEnemyToBirth();
-            this.birthCount = 0;
-        } else {
-            this.birthCount++;
+        if (this.enemiesAvailable) {
+            if (this.birthCount === 120) {
+                this.masterEnemyAI.chooseEnemyToBirth();
+                this.birthCount = 0;
+            } else {
+                this.birthCount++;
+            }
         }
 
         //If the right button is clicked fire the check to see if the power blast can be fired

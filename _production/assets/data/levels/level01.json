@@ -7,7 +7,7 @@
         "assets/images/landscape/layer3.png"
     ],
     "enemies": [{
-            "name": "enemySaucer",
+            "name": "enemySaucer 1",
             "type": "capture",
             "class": "EnemySaucer",
             "count": "5",
@@ -22,12 +22,27 @@
             }
         },
         {
-            "name": "enemySaucer2",
+            "name": "enemySaucer 2",
             "type": "capture",
             "class": "EnemySaucer",
             "count": "5",
-            "birthChance": "50",
+            "birthChance": "20",
             "birthCondition": "this.enemySauceIndex < this.level.friendGroup.length",
+            "birthRate": "100",
+            "maxHealth": "100",
+            "priority": ["onCreate", "return"],
+            "attributes": {
+                "speed": "100",
+                "speedIncrease": "1.25"
+            }
+        },
+        {
+            "name": "enemySaucer 3",
+            "type": "capture",
+            "class": "EnemySaucer",
+            "count": "5",
+            "birthChance": "30",
+            "birthCondition": "this.enemySauceIndex > this.level.friendGroup.length",
             "birthRate": "100",
             "maxHealth": "100",
             "priority": ["onCreate", "return"],

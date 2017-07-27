@@ -1165,6 +1165,9 @@ GameInterface.prototype =
             //Set the chance that this enemy is birthed
             this.enemies[this.enemies.length - 1].birthChance = parseFloat(data.birthChance);
 
+            //Set the chance that this enemy is birthed
+            this.enemies[this.enemies.length - 1].enemiesAvailable = parseFloat(data.count);
+
             //Set the low number of the chance
             this.enemies[this.enemies.length - 1].lowBirthChance = lastBirthChance;
 
@@ -1205,6 +1208,7 @@ GameInterface.prototype =
 
     masterEnemyAI.prototype.chooseEnemyToBirth = function() {
 
+        //Holds enemies that can be birthed
         var e = [];
 
         console.log("total enemies: " + this.enemies.length);
@@ -1216,7 +1220,7 @@ GameInterface.prototype =
 
                 e.push(this.enemies[count]);
 
-                console.log(this.enemies[count].name + " is possible.");
+                console.log("-" + this.enemies[count].name + " is possible.");
 
             }
         }
@@ -1227,11 +1231,11 @@ GameInterface.prototype =
         //total the precent to be calculated
         for (var count = 0; count < e.length; count++) {
 
-            totalPrecentage = e[count].birthChance;
+            totalPrecentage += e[count].birthChance;
 
         }
 
-        console.log("totalPrecentage: " + totalPrecentage);
+        console.log("--totalPrecentage " + totalPrecentage);
 
         var lastBirthChance = 0;
 
@@ -1241,14 +1245,14 @@ GameInterface.prototype =
             //Set the low number of the chance
             e[count].lowBirthChance = lastBirthChance;
 
-            console.log("lowBirthChance: " + e[count].lowBirthChance);
+            console.log("---lowBirthChance for " + e[count].name + " : " + e[count].lowBirthChance);
 
             //Set the high chance
             e[count].highBirthChance = lastBirthChance + ((100 / totalPrecentage) * e[count].birthChance);
 
             lastBirthChance += (100 / totalPrecentage) * e[count].birthChance;
 
-            console.log("highBirthChance: " + e[count].highBirthChance);
+            console.log("---highBirthChance for " + e[count].name + " : " + e[count].highBirthChance);
 
 
         }
@@ -2123,6 +2127,8 @@ GameInterface.prototype =
 
         this.birthCount = 0;
 
+        this.enemiesAvailable = true;
+
     };
 
     /**
@@ -2233,19 +2239,13 @@ GameInterface.prototype =
         this.createMultiFriends(this.numOfHumans);
 
         //Create the enemy ships
-
-        console.log("this.LevelData.enemies: " + this.LevelData.enemies.length);
-
+        //Loop thru all the ememies in the enemies loop array in the JSON
         for (var enemyCount = 0; enemyCount < this.LevelData.enemies.length; enemyCount++) {
 
-            // this.createMultiEnemies(this.LevelData.enemies[count].count, Game[this.LevelData.enemies[count].class], this.LevelData.enemies[count].attributes);
-
-            console.log("--- Creating enemy: " + this.LevelData.enemies[enemyCount].name);
-
+            //Create the individual enemies for the level
             for (var count = 0; count < this.LevelData.enemies[enemyCount].count; count++) {
 
-                console.log("----- Creating enemy ship: " + count);
-
+                //Set the class to be created
                 var enemyToCreate = Game[this.LevelData.enemies[enemyCount].class];
 
                 //Create the enemy
@@ -2385,11 +2385,13 @@ GameInterface.prototype =
         this.gameInterface.update();
 
         //check enemies
-        if (this.birthCount === 120) {
-            this.masterEnemyAI.chooseEnemyToBirth();
-            this.birthCount = 0;
-        } else {
-            this.birthCount++;
+        if (this.enemiesAvailable) {
+            if (this.birthCount === 120) {
+                this.masterEnemyAI.chooseEnemyToBirth();
+                this.birthCount = 0;
+            } else {
+                this.birthCount++;
+            }
         }
 
         //If the right button is clicked fire the check to see if the power blast can be fired
